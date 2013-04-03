@@ -1,0 +1,1 @@
+Panel and component for html(5) use.
