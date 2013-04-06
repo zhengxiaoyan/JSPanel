@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>anyway</title>
+		<script src="JSPanel.js"></script>
+		<script>
+			var btn = JSPanel.Button();
+			btn.extend({
+				width: 5,
+				sayHi:function( n ){
+					alert( "hi, " + n + "! width is " + btn.width );
+				}
+			});
+			function instanceofButton( o ) {
+				alert( o instanceof JSPanel.Button );
+			}
+			function instanceofComponent( o ) {
+				alert( o instanceof JSPanel.Component);
+			}
+			function instanceofPanel( o ) {
+				alert( o instanceof JSPanel.Panel);
+			}
+			function printPanelProps() {
+				var pnl = new JSPanel.Panel();
+				alert(pnl.top + "," + pnl.left + "," + pnl.width + "," + pnl.height);
+			}
+		</script>
+	</head>
+	<body>
+		<div onclick="btn.sayHi('zb')">say hi</div>
+		<div onclick="instanceofButton( btn )">instanceofButton</div>
+		<div onclick="instanceofComponent( btn )">instanceofComponent</div>
+		<div onclick="instanceofPanel( btn )">instanceofPanel</div>
+		<div onclick="printPanelProps()">printPanelProps</div>
+	</body>
+</html>

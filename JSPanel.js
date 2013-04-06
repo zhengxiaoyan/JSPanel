@@ -1,109 +1,104 @@
 /**
  * @author zhang bing
  */
-
-(function( JSPanel, undefined ) { 
+(function( window, undefined ) {
 	
 	var
+	/** 
+	Layout = function( options ) {
+		// TODO
+	}
+	,
+	*/
+	/** provide common properties and methods */
 	_control = function() {
-		// do nothing
-		// provide common properties and methods only
-	}
-	,
-	panel = function( options ) {
-		var me = {};
-		
-		if ( this === panel ) {
-			me = this;
-		} else {
-			me = new panel( options )
+		var me = this;
+		if (!(this instanceof _control)) {
+			me = new _control();
 		}
-		
-		// TODO
-		
 		return me;
 	}
 	,
-	component = function( options ) {
-		var me = {};
-		
-		if ( this === component ) {
-			me = this;
-		} else {
-			me = new component( options )
+	Panel = function( options ) {
+		var me = this;
+		if (!(this instanceof Panel)) {
+			me = new Panel( options );
 		}
-		
 		// TODO
-		
 		return me;
 	}
 	,
-	button = function( options ) {
-		var me = {};
-		
-		if ( this === button ) {
-			me = this;
-		} else {
-			me = new button( options )
+	Component = function( options ) {
+		var me = this;
+		if (!(this instanceof Component)) {
+			me = new Component();
 		}
-		
 		// TODO
-		
 		return me;
 	}
+	,
+	Button = function( options ) {
+		var me = this;
+		if (!(this instanceof Button)) {
+			me = new Button();
+		}
+		// TODO
+		return me;
+	}
+	// more components here.
 	;
 	
 	_control.prototype = {
+		/* properties */
 		id: '',
 		top: 0,
 		left: 0,
 		width: 0,
-		height: 0
-	}
-	
-	_control.prototype.extend = {
-		// TODO
-	}
-	
-	
-	panel.prototype = new _control();
-	panel.constructor = panel;
-	panel.extend({
-		add: function( component ) {
+		height: 0,
+		
+		/* methods */
+		add: function( controls ) {
 			// TODO
 		}
-		// TODO: other methods
+		,
+		extend: function() {
+			if ( arguments.length != 1 ) {
+				return this;
+			}
+			
+			var me = this;
+			var arg = arguments[0];
+			for (var name in arg) {
+				if ( typeof arg[name] === 'object' ) {
+					me[name] = ( arg[name].constructor === Array ) ? [] : {};
+					me.extend( me[name] );
+				} else {
+					me[name] = arg[name];
+				}
+			}
+			
+			return me;
+		}
+	}
+	
+	Panel.prototype = (new _control()).extend({
+		width: 400,
+		height: 400
 	});
+	Panel.prototype.constructor = Panel;
 	
-	component.prototype = new _control();
-	component.constructor = component;
-	component.extend({
-		// TODO: add methods
-	});
+	Component.prototype = new _control();
+	Component.prototype.constructor = Component;
 	
-	button.prototype = new component();
-	button.constructor = button;
-	button.extend({
-		// TODO: add methods
-	});
+	Button.prototype = new Component();
+	Button.prototype.constructor = Button;
 	
-	// map controls to global variants
-	JSPanel.panel = panel;
-	JSPanel.component = component;
-	JSPanel.button = button;
+	/** map controls to namespace. */
+	var JSPanel = JSPanel || {};	// set namespace
+	JSPanel.Panel = Panel;
+	JSPanel.Component = Component;
+	JSPanel.Button = Button;
+	/** expose to global context. */
+	window.JSPanel = JSPanel;
 	
-})( JSPanel || {} );	// namespace: JSPanel
-
-// deep copy sample from internet. for "extend" reference
-function deepCopy(p, c) {  
-  var c = c || {};   
-  for (var i in p) {  
-    if (typeof p[i] === 'object') {  
-      c[i] = (p[i].constructor === Array) ? [] : {};   
-      deepCopy(p[i], c[i]);  
-    } else {  
-      c[i] = p[i];   
-    }   
-  }  
-  return c;  
-}  
+})( window );	// name space: JSPanel
