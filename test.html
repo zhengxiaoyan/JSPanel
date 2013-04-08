@@ -5,13 +5,25 @@
 		<title>anyway</title>
 		<script src="JSPanel.js"></script>
 		<script>
-			var btn = JSPanel.Button();
-			btn.extend({
-				width: 5,
+			// child class creation, way 1
+			Btn = function( o ){ this.init( o ); };
+			Btn.prototype = (new JSPanel.Button()).extend({
 				sayHi:function( n ){
-					alert( "hi, " + n + "! width is " + btn.width );
+					alert( "hi, " + n + "! width is " + this.width );
 				}
 			});
+			var btn1 = new Btn( {width: 50} );
+			
+			// child class creation, way 2
+			Btn2 = Object.spawn(JSPanel.Button, {
+				sayHi:function( n ){
+					alert( "hi, " + n + "! width is " + this.width );
+				}
+			});
+			var btn2 = new Btn2( {width: 60} );
+			
+			// var btn2 = new Btn();
+			// btn2.init( {width: 60} );
 			function instanceofButton( o ) {
 				alert( o instanceof JSPanel.Button );
 			}
@@ -28,10 +40,11 @@
 		</script>
 	</head>
 	<body>
-		<div onclick="btn.sayHi('zb')">say hi</div>
-		<div onclick="instanceofButton( btn )">instanceofButton</div>
-		<div onclick="instanceofComponent( btn )">instanceofComponent</div>
-		<div onclick="instanceofPanel( btn )">instanceofPanel</div>
+		<div onclick="btn1.sayHi('btn1')">say hi, btn1</div>
+		<div onclick="btn2.sayHi('btn2')">say hi, btn2</div>
+		<div onclick="instanceofButton( btn1 )">instanceofButton</div>
+		<div onclick="instanceofComponent( btn1 )">instanceofComponent</div>
+		<div onclick="instanceofPanel( btn1 )">instanceofPanel</div>
 		<div onclick="printPanelProps()">printPanelProps</div>
 	</body>
 </html>

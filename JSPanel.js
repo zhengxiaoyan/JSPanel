@@ -11,7 +11,7 @@
 	,
 	*/
 	/** provide common properties and methods */
-	_control = function() {
+	_control = function( ) {
 		var me = this;
 		if (!(this instanceof _control)) {
 			me = new _control();
@@ -24,7 +24,9 @@
 		if (!(this instanceof Panel)) {
 			me = new Panel( options );
 		}
-		// TODO
+		
+		me.init( options );
+
 		return me;
 	}
 	,
@@ -33,51 +35,59 @@
 		if (!(this instanceof Component)) {
 			me = new Component();
 		}
-		// TODO
+
+		me.init( options );
+
 		return me;
 	}
 	,
 	Button = function( options ) {
 		var me = this;
-		if (!(this instanceof Button)) {
+		if (this.constructor !== Button) {
 			me = new Button();
 		}
-		// TODO
+
+		me.init( options );
+
 		return me;
 	}
 	// more components here.
 	;
 	
 	_control.prototype = {
-		/* properties */
-		id: '',
-		top: 0,
-		left: 0,
-		width: 0,
-		height: 0,
-		
-		/* methods */
-		add: function( controls ) {
-			// TODO
+		/* map "static" properties "public" properties */
+		init: function( options ) {
+			this.id = this.id || 0;
+			this.top = this.top || 0;
+			this.left = this.left || 0;
+			this.width = this.width || 0;
+			this.height = this.height || 0;
+			this.extend( options );
+			return this;
 		}
 		,
+		/* extends ability of this class */
 		extend: function() {
 			if ( arguments.length != 1 ) {
 				return this;
 			}
 			
-			var me = this;
 			var arg = arguments[0];
 			for (var name in arg) {
 				if ( typeof arg[name] === 'object' ) {
-					me[name] = ( arg[name].constructor === Array ) ? [] : {};
-					me.extend( me[name] );
+					this[name] = ( arg[name].constructor === Array ) ? [] : {};
+					this.extend( me[name] );
 				} else {
-					me[name] = arg[name];
+					this[name] = arg[name];
 				}
 			}
 			
-			return me;
+			return this;
+		}
+		,
+		/* methods */
+		add: function( controls ) {
+			// TODO
 		}
 	}
 	
@@ -100,5 +110,15 @@
 	JSPanel.Button = Button;
 	/** expose to global context. */
 	window.JSPanel = JSPanel;
+	
+	Object.spawn = function( p, options ) {
+		function c( o ) {
+			if ( !( this instanceof _control )) return null;
+			p.call( this, o );
+		};
+		var t = (new p()).extend( options );
+		c.prototype = t;
+		return c;
+	}
 	
 })( window );	// name space: JSPanel
