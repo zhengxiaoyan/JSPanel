@@ -5,14 +5,16 @@
 		<title>anyway</title>
 		<script src="JSPanel.js"></script>
 		<script>
+			var btn = JSPanel.Button({width:100});
 			// child class creation, way 1
-			Btn = function( o ){ this.init( o ); };
-			Btn.prototype = (new JSPanel.Button()).extend({
+			Btn1 = function( o ){ this.init( o ); };
+			Btn1.prototype = (new JSPanel.Button()).extend({
 				sayHi:function( n ){
 					alert( "hi, " + n + "! width is " + this.width );
 				}
 			});
-			var btn1 = new Btn( {width: 50} );
+			Btn1.prototype.constructor = Btn1;
+			var btn1 = new Btn1( {width: 50} );
 			
 			// child class creation, way 2
 			Btn2 = Object.spawn(JSPanel.Button, {
@@ -20,7 +22,7 @@
 					alert( "hi, " + n + "! width is " + this.width );
 				}
 			});
-			var btn2 = new Btn2( {width: 60} );
+			var btn2 = new Btn2( {width: 60} ); // "new" is un-abbreviated.
 			
 			// var btn2 = new Btn();
 			// btn2.init( {width: 60} );
@@ -42,6 +44,7 @@
 	<body>
 		<div onclick="btn1.sayHi('btn1')">say hi, btn1</div>
 		<div onclick="btn2.sayHi('btn2')">say hi, btn2</div>
+		<div onclick="alert('btn width: ' + btn.width)">btn width</div>
 		<div onclick="instanceofButton( btn1 )">instanceofButton</div>
 		<div onclick="instanceofComponent( btn1 )">instanceofComponent</div>
 		<div onclick="instanceofPanel( btn1 )">instanceofPanel</div>
