@@ -5,27 +5,32 @@
 		<title>anyway</title>
 		<script src="JSPanel.js"></script>
 		<script>
-			var btn = JSPanel.Button({width:100});
-			// child class creation, way 1
+			var btn = new JSPanel.Button({width:100});
+			
 			Btn1 = function( o ){ this.init( o ); };
 			Btn1.prototype = (new JSPanel.Button()).extend({
 				sayHi:function( n ){
-					alert( "hi, " + n + "! width is " + this.width );
+					alert( "width,cons,inst: "+this.width+","+(this.constructor===Btn1)+","+(this instanceof Btn1));
 				}
 			});
 			Btn1.prototype.constructor = Btn1;
 			var btn1 = new Btn1( {width: 50} );
 			
-			// child class creation, way 2
-			Btn2 = Object.spawn(JSPanel.Button, {
-				sayHi:function( n ){
-					alert( "hi, " + n + "! width is " + this.width );
+			Btn2 = JSPanel.spawn(JSPanel.Button, {
+				sayHi:function(){
+					alert( "width,cons,inst: "+this.width+","+(this.constructor===Btn2)+","+(this instanceof Btn2));
 				}
 			});
-			var btn2 = new Btn2( {width: 60} ); // "new" is un-abbreviated.
+			var btn2 = Btn2( {width: 60} );
 			
-			// var btn2 = new Btn();
-			// btn2.init( {width: 60} );
+			Btn3 = JSPanel.spawn(JSPanel.Button, {
+				sayHi:function(){
+					alert( "width,cons,inst: "+this.width+","+(this.constructor===Btn3)+","+(this instanceof Btn3));
+				}
+			});
+			var btn3 = Btn3( {width: 70} );
+			var btn4 = Btn3( {width: 80} );
+			
 			function instanceofButton( o ) {
 				alert( o instanceof JSPanel.Button );
 			}
@@ -42,9 +47,10 @@
 		</script>
 	</head>
 	<body>
-		<div onclick="btn1.sayHi('btn1')">say hi, btn1</div>
-		<div onclick="btn2.sayHi('btn2')">say hi, btn2</div>
-		<div onclick="alert('btn width: ' + btn.width)">btn width</div>
+		<div onclick="alert('btn width: ' + btn.width)">btn</div>
+		<div onclick="btn1.sayHi()">btn1</div>
+		<div onclick="btn2.sayHi()">btn2</div>
+		<div onclick="btn3.sayHi()">btn3</div>
 		<div onclick="instanceofButton( btn1 )">instanceofButton</div>
 		<div onclick="instanceofComponent( btn1 )">instanceofComponent</div>
 		<div onclick="instanceofPanel( btn1 )">instanceofPanel</div>

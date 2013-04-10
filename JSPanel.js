@@ -11,45 +11,27 @@
 	,
 	*/
 	/** provide common properties and methods */
-	_control = function( ) {
+	_control = function( f, o ) {
 		var me = this;
-		if (!(this instanceof _control)) {
-			me = new _control();
+		var con = f || _control;
+		// if (!(this instanceof con)) {
+		if (this.constructor !== con) {
+			me = new con();
 		}
+		me.init( o );
 		return me;
 	}
 	,
 	Panel = function( options ) {
-		var me = this;
-		if (!(this instanceof Panel)) {
-			me = new Panel( options );
-		}
-		
-		me.init( options );
-
-		return me;
+		return _control.call( this, Panel, options );
 	}
 	,
 	Component = function( options ) {
-		var me = this;
-		if (!(this instanceof Component)) {
-			me = new Component();
-		}
-
-		me.init( options );
-
-		return me;
+		return _control.call( this, Component, options );
 	}
 	,
 	Button = function( options ) {
-		var me = this;
-		if (this.constructor !== Button) {
-			me = new Button();
-		}
-
-		me.init( options );
-
-		return me;
+		return _control.call( this, Button, options );
 	}
 	// more components here.
 	;
@@ -85,16 +67,16 @@
 			return this;
 		}
 		,
-		/* methods */
 		add: function( controls ) {
 			// TODO
 		}
 	}
+	_control.prototype.constructor = _control;
 	
 	Panel.prototype = (new _control()).extend({
 		width: 400,
 		height: 400
-	});
+	})
 	Panel.prototype.constructor = Panel;
 	
 	Component.prototype = new _control();
@@ -105,20 +87,21 @@
 	
 	/** map controls to namespace. */
 	var JSPanel = JSPanel || {};	// set namespace
+	
 	JSPanel.Panel = Panel;
 	JSPanel.Component = Component;
 	JSPanel.Button = Button;
-	/** expose to global context. */
-	window.JSPanel = JSPanel;
 	
-	Object.spawn = function( p, options ) {
-		function c( o ) {
-			if ( !( this instanceof _control )) return null;
-			p.call( this, o );
+	JSPanel.spawn = function( parent, options ) {
+		function F( o ) {
+			//if ( !( this instanceof _control )) return null;
+			return _control.call( this, F, o );
 		};
-		var t = (new p()).extend( options );
-		c.prototype = t;
-		return c;
+		F.prototype = ( new parent() ).extend( options );
+		F.prototype.constructor = F;
+		return F;
 	}
 	
+	/** expose to global context. */
+	window.JSPanel = JSPanel;
 })( window );	// name space: JSPanel
