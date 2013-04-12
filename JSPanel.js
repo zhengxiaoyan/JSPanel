@@ -14,7 +14,6 @@
 	_control = function( f, o ) {
 		var me = this;
 		var con = f || _control;
-		// if (!(this instanceof con)) {
 		if (this.constructor !== con) {
 			me = new con();
 		}
@@ -49,18 +48,35 @@
 		}
 		,
 		/* extends ability of this class */
-		extend: function() {
-			if ( arguments.length != 1 ) {
+		extend: function( ifdeep, target, object ) {
+			var
+			copyto,
+			cnt = 0,
+			deep = false,
+			arg = arguments[ cnt ];
+			
+			if ( arg == undefined ) {
 				return this;
 			}
 			
-			var arg = arguments[0];
+			if ( typeof arg === "boolean" ) {
+				deep = arg;
+				arg = arguments[ ++ cnt ];
+			}
+			
+			if ( arguments.length - cnt === 1 ) {
+				copyto = this;
+			} else {
+				copyto = arg;
+				arg = arguments[ ++cnt ];
+			}
+			
 			for (var name in arg) {
-				if ( typeof arg[name] === 'object' ) {
-					this[name] = ( arg[name].constructor === Array ) ? [] : {};
-					this.extend( me[name] );
+				if ( deep && typeof arg[name] === 'object' ) {
+					copyto[name] = copyto[name] || ( arg[name].constructor === Array ) ? [] : {};
+					this.extend( deep, copyto[name], arg[name] );
 				} else {
-					this[name] = arg[name];
+					copyto[name] = arg[name];
 				}
 			}
 			
